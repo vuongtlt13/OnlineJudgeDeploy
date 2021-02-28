@@ -15,12 +15,12 @@ services:
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=onlinejudge
-      - POSTGRES_USER=onlinejudge
-      - POSTGRES_PASSWORD=onlinejudge
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
   judge-server:
-    image: registry.cn-hangzhou.aliyuncs.com/onlinejudge/judge_server
+    image: vuongtlt13/judge_server
     container_name: judge-server
     restart: always
     read_only: true
@@ -40,11 +40,11 @@ services:
     environment:
       - SERVICE_URL=http://judge-server:8080
       - BACKEND_URL=http://oj-backend:8000/api/judge_server_heartbeat/
-      - TOKEN=CHANGE_THIS
+      - TOKEN=${JUDGE_SERVER_TOKEN}
       # - judger_debug=1
   
   oj-backend:
-    image: registry.cn-hangzhou.aliyuncs.com/onlinejudge/oj_backend
+    image: vuongtlt13/oj_backend
     container_name: oj-backend
     restart: always
     depends_on:
@@ -54,12 +54,10 @@ services:
     volumes:
       - ./data/backend:/data
     environment:
-      - POSTGRES_DB=onlinejudge
-      - POSTGRES_USER=onlinejudge
-      - POSTGRES_PASSWORD=onlinejudge
-      - JUDGE_SERVER_TOKEN=CHANGE_THIS
-      # - FORCE_HTTPS=1
-      # - STATIC_CDN_HOST=cdn.oj.com
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - JUDGE_SERVER_TOKEN=${JUDGE_SERVER_TOKEN}
     ports:
       - "0.0.0.0:80:8000"
       - "0.0.0.0:443:1443"
